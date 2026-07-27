@@ -1,0 +1,208 @@
+@import 'tailwindcss';
+@import './hero-anim.css';
+
+@theme {
+  --color-bg: #08080c;
+  --color-bg-soft: #0e0e16;
+  --color-card: #12121c;
+  --color-border: #20202e;
+  --color-ink: #ecedf4;
+  --color-muted: #9a9ab0;
+  --color-accent: #8b5cf6;
+  --color-accent-2: #22d3ee;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+@media (pointer: fine) {
+  body {
+    cursor: default;
+  }
+}
+
+/* ---------- Aurora background ---------- */
+.bg-grid {
+  background-image: linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.aurora-1 {
+  width: 460px;
+  height: 460px;
+  top: -120px;
+  left: -80px;
+  background: radial-gradient(circle, #8b5cf6, transparent 70%);
+  animation: drift1 19s ease-in-out infinite;
+}
+.aurora-2 {
+  width: 520px;
+  height: 520px;
+  top: 28%;
+  right: -160px;
+  background: radial-gradient(circle, #22d3ee, transparent 70%);
+  animation: drift2 23s ease-in-out infinite;
+}
+.aurora-3 {
+  width: 420px;
+  height: 420px;
+  bottom: -140px;
+  left: 32%;
+  background: radial-gradient(circle, #d946ef, transparent 70%);
+  animation: drift3 27s ease-in-out infinite;
+}
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(70px, 60px) scale(1.15); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-90px, 40px) scale(1.1); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -70px) scale(1.2); }
+}
+
+/* ---------- Cursor spotlight ---------- */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 460px;
+  height: 460px;
+  margin: -230px 0 0 -230px;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.13), rgba(34, 211, 238, 0.05) 35%, transparent 60%);
+  transition: opacity 0.35s ease;
+  will-change: transform;
+}
+
+/* ---------- Helpers ---------- */
+.glow {
+  background: radial-gradient(600px circle at 50% 0%, rgba(139, 92, 246, 0.18), transparent 70%);
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, var(--color-accent), var(--color-accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Project card: 3D tilt + cursor glow ---------- */
+.tilt-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.tilt-card:hover {
+  box-shadow: 0 24px 60px -24px rgba(139, 92, 246, 0.35);
+}
+.card-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%), rgba(139, 92, 246, 0.16), transparent 65%);
+}
+.tilt-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* ---------- Reveal-on-scroll ---------- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reveal {
+  opacity: 0;
+}
+.reveal.in {
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ---------- Misc ---------- */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.cursor {
+  animation: blink 1s step-end infinite;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .aurora,
+  .cursor,
+  .tilt-card {
+    animation: none !important;
+    transform: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    animation: none !important;
+  }
+}

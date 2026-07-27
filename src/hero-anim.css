@@ -1,0 +1,304 @@
+/* ============================================================
+   HERO — BUILD SEQUENCE
+   The hero assembles itself: blank -> wireframe -> greybox ->
+   text resolves -> chips & CTAs -> settled.
+   ============================================================ */
+.hero-build .bs-el {
+  transition:
+    color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.4s ease;
+  transition-delay: calc(var(--d, 0) * 70ms);
+}
+
+/* 0 - nothing yet */
+.hero-build[data-step="0"] .bs-el {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* 1 & 2 - the text is a block, not words */
+.hero-build[data-step="1"] .bs-el,
+.hero-build[data-step="1"] .bs-el *,
+.hero-build[data-step="2"] .bs-el,
+.hero-build[data-step="2"] .bs-el * {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.hero-build[data-step="1"] .gradient-text,
+.hero-build[data-step="2"] .gradient-text {
+  background-image: none !important;
+}
+.hero-build[data-step="1"] .bs-el {
+  border-radius: 10px;
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.45);
+}
+.hero-build[data-step="2"] .bs-el {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.22);
+}
+
+/* wireframe guides, only while boxing out */
+.bs-guides {
+  position: absolute;
+  inset: -14px -16px;
+  pointer-events: none;
+  opacity: 0;
+  border: 1px dashed rgba(139, 92, 246, 0.35);
+  border-radius: 14px;
+  transition: opacity 0.4s ease;
+}
+.hero-build[data-step="1"] .bs-guides,
+.hero-build[data-step="2"] .bs-guides {
+  opacity: 1;
+}
+.bs-guide-label {
+  position: absolute;
+  top: -9px;
+  left: 14px;
+  padding: 0 7px;
+  background: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-style: normal;
+  color: rgba(139, 92, 246, 0.85);
+}
+
+/* late arrivals: work stack + right column */
+.hero-build .bs-late,
+.hero-visual {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-build[data-step="4"] .bs-late,
+.hero-build[data-step="5"] .bs-late,
+.hero-visual[data-step="4"],
+.hero-visual[data-step="5"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* stack chips pop in one after another */
+.hero-build .bs-chip {
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+.hero-build[data-step="4"] .bs-chip,
+.hero-build[data-step="5"] .bs-chip {
+  opacity: 1;
+  transform: none;
+}
+
+/* replay control */
+.bs-replay {
+  margin-top: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  padding: 5px 13px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.hero-build[data-step="5"] .bs-replay {
+  opacity: 1;
+  pointer-events: auto;
+}
+.bs-replay:hover {
+  color: var(--color-ink);
+  border-color: var(--color-accent);
+}
+
+/* ============================================================
+   HERO — REQUEST JOURNEY (looping packet round trip)
+   ============================================================ */
+.rj {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.9);
+}
+.rj-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 11px 14px;
+}
+.rj-dots {
+  display: flex;
+  gap: 5px;
+}
+.rj-dots i {
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+}
+.rj-dots i:nth-child(1) { background: #ff5f57; }
+.rj-dots i:nth-child(2) { background: #febc2e; }
+.rj-dots i:nth-child(3) { background: #28c840; }
+.rj-title {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-muted);
+}
+.rj-status {
+  margin-left: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-muted);
+  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+.rj-status.is-ok {
+  color: #28c840;
+  border-color: rgba(40, 200, 64, 0.45);
+  background: rgba(40, 200, 64, 0.12);
+}
+.rj-body {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  padding: 16px 16px 18px;
+}
+.rj-rail {
+  position: relative;
+  width: 2px;
+  flex: none;
+  margin-left: 6px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent, var(--color-border) 12%, var(--color-border) 88%, transparent);
+}
+.rj-packet {
+  position: absolute;
+  left: 50%;
+  height: 10px;
+  width: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 16px var(--color-accent);
+  transition: top 0.62s cubic-bezier(0.5, 0, 0.2, 1), background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.rj-packet[data-phase="up"] {
+  background: var(--color-accent-2);
+  box-shadow: 0 0 16px var(--color-accent-2);
+}
+.rj-stations {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+.rj-station {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  background: var(--color-bg-soft);
+  padding: 9px 11px;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease, background-color 0.35s ease;
+}
+.rj-station[data-reached] {
+  border-color: rgba(139, 92, 246, 0.32);
+}
+.rj-station[data-active] {
+  border-color: var(--color-accent);
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 0 1px var(--color-accent), 0 14px 34px -18px var(--color-accent);
+  transform: translateX(3px);
+}
+.rj-ic {
+  display: flex;
+  height: 28px;
+  width: 28px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-muted);
+  transition: color 0.35s ease, border-color 0.35s ease;
+}
+.rj-station[data-active] .rj-ic {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.rj-meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.rj-meta b {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.rj-meta i {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-style: normal;
+  color: var(--color-muted);
+}
+.rj-ms {
+  margin-left: auto;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: transparent;
+  transition: color 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+}
+.rj-station[data-reached] .rj-ms {
+  color: var(--color-accent-2);
+  border-color: var(--color-border);
+  background: var(--color-bg);
+}
+
+/* ---------- Magnetic controls ---------- */
+.magnetic {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-build .bs-el,
+  .hero-build .bs-late,
+  .hero-build .bs-chip,
+  .hero-visual,
+  .magnetic {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .rj-packet {
+    transition: none;
+  }
+}
